@@ -3,6 +3,7 @@ import CodeEditor from './CodeEditor';
 import areBracketsBalanced, { checkConditions } from '../utility/BrackerOps';
 import { isInitialPartialInput, getMatchingValues, getCategoryForComparison, shouldShowComparisonOperators, getMatchingCategories } from '../utility/LCUtility';
 import categoryList from '../utility/LCUtility';
+import { isPatternValid } from '../utility/afterSearch';
 
 const LC = ({ options }) => {
     console.log("Here from LC by SDD. Check last and send Object");
@@ -77,10 +78,19 @@ const LC = ({ options }) => {
     const afterSearch = () => {
         if (!areBracketsBalanced(search)) {
             alert("Please close brackets properly")
+            return
         }
         if (!checkConditions(search)) {
             alert('Add atleast host and application')
+            return
         }
+        if (!isPatternValid(search)) {
+            alert("Query must follow pattern: <Category> <== or !=> <Value> <AND/OR> ...");
+            return;
+        }
+    
+        // ✅ Passed all validations
+        console.log("Search is valid!");
     }
 
     return (
