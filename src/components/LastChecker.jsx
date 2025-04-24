@@ -9,7 +9,6 @@ const LC = ({ options }) => {
     console.log("Here from LC by SDD. Check last and send Object");
     const [search, setSearchValue] = useState('');
     const [results, setResults] = useState([]);
-    const [error, setErrorMessage] = useState('')
 
     useEffect(() => {
         const trimmedSearch = search.trim();
@@ -84,10 +83,10 @@ const LC = ({ options }) => {
             alert('Add atleast host and application')
             return
         }
-        if (!isPatternValid(search)) {
-            alert("Query must follow pattern: <Category> <== or !=> <Value> <AND/OR> ...");
-            return;
-        }
+        const validationResult = isPatternValid(search, options);
+        if (!validationResult.valid) {
+            alert(validationResult.error)
+        }        
     
         // ✅ Passed all validations
         console.log("Search is valid!");
@@ -109,7 +108,6 @@ const LC = ({ options }) => {
                 )}
             </div>
             <button type='submit' onClick={() => afterSearch()} />
-            <textarea value={error} />
         </>
     );
 };
