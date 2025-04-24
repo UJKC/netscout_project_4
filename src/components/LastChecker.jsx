@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import CodeEditor from './CodeEditor';
+import areBracketsBalanced, { checkConditions } from '../utility/BrackerOps';
 
 const LC = ({ options }) => {
     console.log("Here from LC by SDD. Check last and send Object");
     const [search, setSearchValue] = useState('');
     const [results, setResults] = useState([]);
+    const [error, setErrorMessage] = useState('')
 
     useEffect(() => {
         const trimmedSearch = search.trim();
@@ -138,19 +140,32 @@ const LC = ({ options }) => {
         ]);
     }, [search, options]);
 
+    const afterSearch = () => {
+        if (!areBracketsBalanced(search)) {
+            alert("Please close brackets properly")
+        }
+        if (!checkConditions(search)) {
+            alert('Add atleast host and application')
+        }
+    }
+
     return (
         <>
-            <CodeEditor options={options} onChange={setSearchValue} optional={search} results={results} />
-            {search && <>{search}</>}
-            {results.length > 0 && (
-                <ul>
-                    {results.map((item, index) => (
-                        <li key={`${item.id}-${index}`}>
-                            {item.label} — {item.value}
-                        </li>
-                    ))}
-                </ul>
-            )}
+            <div style={{display: 'flex'}}>
+                <CodeEditor options={options} onChange={setSearchValue} optional={search} results={results} />
+                {search && <>{search}</>}
+                {results.length > 0 && (
+                    <ul>
+                        {results.map((item, index) => (
+                            <li key={`${item.id}-${index}`}>
+                                {item.label} — {item.value}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+            <button type='submit' onClick={() => afterSearch()} />
+            <textarea value={error} />
         </>
     );
 };
