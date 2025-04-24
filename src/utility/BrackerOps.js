@@ -20,8 +20,15 @@ const areBracketsBalanced = (input) => {
 }
 
 export function checkConditions(str) {
-    const hasHost = str.includes('Host ==') || str.includes('Host_Group ==');
-    const hasAppOrPort = str.includes('Application ==') || str.includes('Port ==');
+    const hasHost =
+        str.includes('Host ==') || str.includes('Host !=') || str.includes('Host in') ||
+        str.includes('Host_Group ==') || str.includes('Host_Group !=') || str.includes('Host_Group in') ||
+        str.includes('Geolocation ==') || str.includes('Geolocation !=') || str.includes('Geolocation in');
+
+    const hasAppOrPort =
+        str.includes('Application ==') || str.includes('Application !=') || str.includes('Application in') ||
+        str.includes('Port ==') || str.includes('Port !=') || str.includes('Port in');
+
     return hasHost && hasAppOrPort;
 }
 
