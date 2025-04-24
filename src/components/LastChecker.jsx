@@ -31,12 +31,13 @@ const LC = ({ options }) => {
             setResults([
                 { label: "==", value: "Equal", id: 1 },
                 { label: "!=", value: "NEqual", id: 2 },
+                { label: "in", value: "NEqual", id: 2 },
             ]);
             return;
         }
 
         // Case 2.5: Category followed by '==' and then '(' (start of multiple values)
-        if (secondLast === "==" && last === "(") {
+        if (secondLast === "in" && last === "(") {
             const category = parts[parts.length - 3];
             if (categoryList.includes(category)) {
                 const values = options[category] || [];
@@ -44,7 +45,35 @@ const LC = ({ options }) => {
                 return;
             }
         }
-        
+
+        // Case 2.6: Typing comma inside multi-value list
+        if (last === ",") {
+            const openParenIndex = parts.lastIndexOf("(");
+            const equalIndex = parts.lastIndexOf("in");
+
+            if (openParenIndex > -1 && equalIndex > -1 && openParenIndex > equalIndex) {
+                const category = parts[equalIndex - 1];
+
+                if (categoryList.includes(category)) {
+                    const alreadyEntered = parts
+                        .slice(openParenIndex + 1, parts.length - 1)
+                        .map(v => v.replace(/,/g, "").trim())
+                        .filter(Boolean);
+
+                    const allOptions = options[category] || [];
+
+                    const filtered = allOptions.filter(opt =>
+                        !alreadyEntered.includes(opt.label) &&
+                        !alreadyEntered.includes(opt.value) &&
+                        !alreadyEntered.includes(String(opt.id))
+                    );
+
+                    setResults(filtered.map((opt, i) => ({ ...opt, id: i })));
+                    return;
+                }
+            }
+        }
+
 
 
         // Case 3.1: Category followed by == or !=

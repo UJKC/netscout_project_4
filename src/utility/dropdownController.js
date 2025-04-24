@@ -10,7 +10,7 @@ export const registerCustomCompletions = (monaco, results = []) => {
         suggestions: results.map((item) => ({
           label: item.label,
           kind: monaco.languages.CompletionItemKind.Text,
-          insertText: item.label,
+          insertText: item.label + ' ',
         })),
       };
     },

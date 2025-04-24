@@ -1,5 +1,5 @@
 const categoryList = ["Application", "Port", "Host", "Geolocation", "Host_Group"];
-const comparisonOperators = ["==", "!="];
+const comparisonOperators = ["==", "!=", "in"];
 const logicalOperators = ["AND", "OR"];
 const categoriesWithValueValidation = ["Application", "Geolocation", "Host_Group"];
 
