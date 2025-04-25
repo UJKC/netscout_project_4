@@ -13,16 +13,35 @@ const LC = ({ options }) => {
     useEffect(() => {
         const trimmedSearch = search.trim();
         const parts = search.split(/\s+/).filter(Boolean);
-
         const last = parts[parts.length - 1] || '';
         const secondLast = parts[parts.length - 2] || '';
         const thirdLast = parts[parts.length - 3] || '';
         const lastTwo = parts.slice(-2).join(' ');
-        const lastToken = last.toUpperCase();
+        const lastToken = trimmedSearch.split(/\s+/).pop();
+        const isSpecialToken = ["AND", "OR", "NOT", "["].includes(lastToken);
+        const isSecondLastSpecialToken = ["AND", "OR", "NOT", "["].includes(secondLast);
+        const isFirstInputOrPartial = !trimmedSearch || isInitialPartialInput(trimmedSearch.split(/\s+/), lastToken);
+
+        const mappedCategories = categoryList.map((cat, index) => ({
+            label: cat,
+            value: cat.toLowerCase().replace(/\s+/g, ''),
+            id: index + 1,
+        }));
+
+        // Case 0: Last token is [
+        if (isSpecialToken) {
+            setResults(mappedCategories);
+            return;
+        }
+
+        if (isSecondLastSpecialToken) {
+            setResults(getMatchingCategories(lastToken, trimmedSearch));
+            return;
+        }
 
         // Case 1: Initial input or partial category
-        if (!trimmedSearch || ["AND", "OR", "NOT"].includes(lastToken) || isInitialPartialInput(parts, last)) {
-            setResults(getMatchingCategories(last, trimmedSearch));
+        if (isFirstInputOrPartial) {
+            setResults(getMatchingCategories(lastToken, trimmedSearch));
             return;
         }
 
