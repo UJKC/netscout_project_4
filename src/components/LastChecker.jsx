@@ -3,7 +3,7 @@ import CodeEditor from './CodeEditor';
 import areBracketsBalanced, { checkConditions } from '../utility/BrackerOps';
 import { isInitialPartialInput, getMatchingValues, getCategoryForComparison, shouldShowComparisonOperators, getMatchingCategories } from '../utility/LCUtility';
 import categoryList from '../utility/LCUtility';
-import { isPatternValid } from '../utility/afterSearch';
+import { checkCategoriesForRepetition, isPatternValid } from '../utility/afterSearch';
 
 const LC = ({ options }) => {
     console.log("Here from LC by SDD. Check last and send Object");
@@ -124,9 +124,15 @@ const LC = ({ options }) => {
             alert('Add atleast host and application')
             return
         }
+        const repeated = checkCategoriesForRepetition(search)
+        if (!repeated.valid) {
+            alert(repeated.error)
+            return
+        }
         const validationResult = isPatternValid(search, options);
         if (!validationResult.valid) {
             alert(validationResult.error)
+            return
         }
 
         // ✅ Passed all validations

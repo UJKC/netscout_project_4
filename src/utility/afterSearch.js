@@ -108,3 +108,32 @@ export function isPatternValid(search, options) {
 
     return { valid: true };
 }
+
+export const checkCategoriesForRepetition = (searchString) => {
+    // Regex to find tokens that match '==', '!=', or 'in' preceded by a word-like category
+    const regex = /(\w+)\s*(==|!=|in)/g;
+    const categories = [];
+    let match;
+
+    // Find all instances where a category is used with '==', '!=', or 'in'
+    while ((match = regex.exec(searchString)) !== null) {
+        categories.push(match[1]); // match[1] is the category (word before the operator)
+    }
+
+    // Count occurrences of each category
+    const categoryCount = categories.reduce((acc, category) => {
+        acc[category] = (acc[category] || 0) + 1;
+        return acc;
+    }, {});
+
+    // Find categories that are repeated
+    const repeatedCategories = Object.keys(categoryCount).filter(category => categoryCount[category] > 1);
+
+    // Return result if there are repeated categories
+    if (repeatedCategories.length > 0) {
+        return { valid: false, error: `The following categories are repeated: ${repeatedCategories.join(', ')}` };
+    }
+    else {
+        return { valid: true };
+    }
+};
