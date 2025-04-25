@@ -137,3 +137,33 @@ export const checkCategoriesForRepetition = (searchString) => {
         return { valid: true };
     }
 };
+
+
+export const checkBracketsAndOperators = (inputString) => {
+    // Step 1: Check for balanced square brackets
+    const bracketBalanceRegex = /\[|\]/g;
+    const bracketCount = (inputString.match(bracketBalanceRegex) || []).length;
+
+    if (bracketCount % 2 !== 0) {
+        return { valid: false, error: "Unmatched brackets found." };
+    }
+
+    // Step 2: Find all the square-bracketed sections in the input string
+    const bracketedSections = inputString.match(/\[.*?\]/g) || [];
+
+    // Step 3: Check if there are at least two bracketed sections
+    if (bracketedSections.length > 1) {
+        // Step 4: Check that the sections between brackets have a logical operator (AND, OR, NOT)
+        const operatorCheckRegex = /\b(AND|OR|NOT)\b/i;
+
+        for (let i = 0; i < bracketedSections.length - 1; i++) {
+            // If there's no logical operator between the current and the next bracketed section
+            if (!operatorCheckRegex.test(inputString.slice(inputString.indexOf(bracketedSections[i]) + bracketedSections[i].length, inputString.indexOf(bracketedSections[i + 1])))) {
+                return { valid: false, error: "Missing logical operator ('AND', 'OR', 'NOT') between brackets." };
+            }
+        }
+    }
+
+    // If all checks pass
+    return { valid: true };
+};

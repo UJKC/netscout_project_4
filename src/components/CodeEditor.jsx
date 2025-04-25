@@ -30,7 +30,7 @@ const CodeEditor = ({ onChange, results }) => {
       theme="vs-dark"
       onMount={handleEditorDidMount}
       onChange={(value) => onChange(value)}
-      options={{ lineNumbers: 'off' }}
+      options={{ lineNumbers: 'off', autoClosingBrackets: 'never'}}
     />
   );
 };
