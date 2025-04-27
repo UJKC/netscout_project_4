@@ -3,7 +3,7 @@ import CodeEditor from './CodeEditor';
 import areBracketsBalanced, { checkConditions } from '../utility/BrackerOps';
 import { isInitialPartialInput, getMatchingValues, getCategoryForComparison, shouldShowComparisonOperators, getMatchingCategories } from '../utility/LCUtility';
 import categoryList from '../utility/LCUtility';
-import { checkBracketsAndOperators, checkCategoriesForRepetition, extractStringsInBrackets, hasBrackets, isPatternValid, removeContentBetweenBrackets } from '../utility/afterSearch';
+import { checkBracketsAndOperators, checkCategoriesForRepetition, extractStringsInBrackets, hasBrackets, isPatternValid, removeContentBetweenBrackets, findCategoriesInExtractedStrings, checkConditionsAndAlertConditional } from '../utility/afterSearch';
 
 const LC = ({ options }) => {
     console.log("Here from LC by SDD. Check last and send Object");
@@ -148,6 +148,8 @@ const LC = ({ options }) => {
         if (specialcheck) {
             const extractedStrings = extractStringsInBrackets(search); // Assuming you already have this function
 
+            const foundCategories = findCategoriesInExtractedStrings(extractedStrings);
+
             for (const search of extractedStrings) {
                 const validationResult = isPatternValid(search, options);
                 if (!validationResult.valid) {
@@ -158,6 +160,9 @@ const LC = ({ options }) => {
 
             const cleanStringResults = removeContentBetweenBrackets(search)
 
+            if (!checkConditionsAndAlertConditional(search, foundCategories)) {
+                return; // The alert is handled within checkConditionsAndAlertConditional
+            }
             const repeated = checkCategoriesForRepetition(cleanStringResults)
             if (!repeated.valid) {
                 alert(repeated.error)

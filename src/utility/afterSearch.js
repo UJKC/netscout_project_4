@@ -198,3 +198,54 @@ export function removeContentBetweenBrackets(text) {
 
     return cleanedText.trim(); // Trim again to remove any potential extra whitespace
 }
+
+export function findCategoriesInExtractedStrings(extractedStrings) {
+    const matchedCategories = []; // This is the array where we store the matches
+    for (const extracted of extractedStrings) {
+        const trimmedLowerExtracted = extracted.trim().toLowerCase();
+        const foundCategory = categoryList.find(
+            (category) => category.toLowerCase() === trimmedLowerExtracted
+        );
+        if (foundCategory) {
+            matchedCategories.push(foundCategory); // We push the matching category into the array
+        }
+    }
+    return matchedCategories; // The function returns the array of matched categories
+}
+
+export function checkConditionsAndAlertConditional(str, foundCategories) {
+    const hasHost = checkCategoryPresence(str, ['Host', 'Host_Group', 'Geolocation']);
+    const hasAppOrPort = checkCategoryPresence(str, ['Application', 'Port']);
+  
+    if (hasHost && hasAppOrPort) {
+      return true; // Both conditions are met
+    } else if (!hasHost) {
+      // Host group is missing in str, check if any Host category is in foundCategories
+      const hasFoundHostCategory = foundCategories.some(cat =>
+        ['Host', 'Host_Group', 'Geolocation'].some(hostCat => cat.toLowerCase() === hostCat.toLowerCase())
+      );
+      if (!hasFoundHostCategory) {
+        alert('Add at least Host/Host_Group/Geolocation');
+      }
+      return false;
+    } else if (!hasAppOrPort) {
+      // App/Port group is missing in str, check if any App/Port category is in foundCategories
+      const hasFoundAppOrPortCategory = foundCategories.some(cat =>
+        ['Application', 'Port'].some(appPortCat => cat.toLowerCase() === appPortCat.toLowerCase())
+      );
+      if (!hasFoundAppOrPortCategory) {
+        alert('Add at least Application/Port');
+      }
+      return false;
+    }
+    return false; // Should not reach here if the conditions are handled correctly above
+  }
+  
+  function checkCategoryPresence(str, categories) {
+    return categories.some(category =>
+      str.includes(`${category} ==`) ||
+      str.includes(`${category} !=`) ||
+      str.includes(`${category} in`)
+    );
+  }
+  
