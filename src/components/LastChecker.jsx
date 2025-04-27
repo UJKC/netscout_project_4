@@ -3,7 +3,7 @@ import CodeEditor from './CodeEditor';
 import areBracketsBalanced, { checkConditions } from '../utility/BrackerOps';
 import { isInitialPartialInput, getMatchingValues, getCategoryForComparison, shouldShowComparisonOperators, getMatchingCategories } from '../utility/LCUtility';
 import categoryList from '../utility/LCUtility';
-import { checkBracketsAndOperators, checkCategoriesForRepetition, isPatternValid } from '../utility/afterSearch';
+import { checkBracketsAndOperators, checkCategoriesForRepetition, hasBrackets, isPatternValid } from '../utility/afterSearch';
 
 const LC = ({ options }) => {
     console.log("Here from LC by SDD. Check last and send Object");
@@ -144,6 +144,11 @@ const LC = ({ options }) => {
             alert(sqarebrackerdisciplined.error)
             return
         }
+        const specialcheck = hasBrackets(search)
+        if (specialcheck) {
+            console.log("Yess")
+        }
+        else {
         if (!checkConditions(search)) {
             alert('Add atleast host and application')
             return
@@ -158,9 +163,10 @@ const LC = ({ options }) => {
             alert(validationResult.error)
             return
         }
+        }
 
-        // ✅ Passed all validations
-        console.log("Search is valid!");
+        // // ✅ Passed all validations
+        alert("Search is valid!");
     }
 
     return (

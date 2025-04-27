@@ -167,3 +167,8 @@ export const checkBracketsAndOperators = (inputString) => {
     // If all checks pass
     return { valid: true };
 };
+
+export function hasBrackets(str) {
+    return str.includes('[') && str.includes(']');
+  }
+  
