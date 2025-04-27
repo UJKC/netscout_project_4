@@ -170,5 +170,31 @@ export const checkBracketsAndOperators = (inputString) => {
 
 export function hasBrackets(str) {
     return str.includes('[') && str.includes(']');
-  }
-  
+}
+
+export function extractStringsInBrackets(str) {
+    const result = [];
+    const regex = /\[(.*?)\]/g;
+    let match;
+
+    while ((match = regex.exec(str)) !== null) {
+        result.push(match[1]); // match[1] is the content inside []
+    }
+
+    return result;
+}
+
+export function removeContentBetweenBrackets(text) {
+    let cleanedText = text.replace(/\[.*?\]/g, '');
+
+    // Trim leading and trailing whitespace
+    cleanedText = cleanedText.trim();
+
+    // Remove leading AND, OR, NOT (case-insensitive)
+    cleanedText = cleanedText.replace(/^(\s*(AND|OR|NOT)\s*)+/, '');
+
+    // Remove trailing AND, OR, NOT (case-insensitive)
+    cleanedText = cleanedText.replace(/(\s*(AND|OR|NOT)\s*)+$/, '');
+
+    return cleanedText.trim(); // Trim again to remove any potential extra whitespace
+}

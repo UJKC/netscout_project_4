@@ -3,7 +3,7 @@ import CodeEditor from './CodeEditor';
 import areBracketsBalanced, { checkConditions } from '../utility/BrackerOps';
 import { isInitialPartialInput, getMatchingValues, getCategoryForComparison, shouldShowComparisonOperators, getMatchingCategories } from '../utility/LCUtility';
 import categoryList from '../utility/LCUtility';
-import { checkBracketsAndOperators, checkCategoriesForRepetition, hasBrackets, isPatternValid } from '../utility/afterSearch';
+import { checkBracketsAndOperators, checkCategoriesForRepetition, extractStringsInBrackets, hasBrackets, isPatternValid, removeContentBetweenBrackets } from '../utility/afterSearch';
 
 const LC = ({ options }) => {
     console.log("Here from LC by SDD. Check last and send Object");
@@ -146,23 +146,45 @@ const LC = ({ options }) => {
         }
         const specialcheck = hasBrackets(search)
         if (specialcheck) {
-            console.log("Yess")
+            const extractedStrings = extractStringsInBrackets(search); // Assuming you already have this function
+
+            for (const search of extractedStrings) {
+                const validationResult = isPatternValid(search, options);
+                if (!validationResult.valid) {
+                    alert(validationResult.error);
+                    return;
+                }
+            }
+
+            const cleanStringResults = removeContentBetweenBrackets(search)
+
+            const repeated = checkCategoriesForRepetition(cleanStringResults)
+            if (!repeated.valid) {
+                alert(repeated.error)
+                return
+            }
+            const validationResult = isPatternValid(cleanStringResults, options);
+            if (!validationResult.valid) {
+                alert(validationResult.error)
+                return
+            }
+
         }
         else {
-        if (!checkConditions(search)) {
-            alert('Add atleast host and application')
-            return
-        }
-        const repeated = checkCategoriesForRepetition(search)
-        if (!repeated.valid) {
-            alert(repeated.error)
-            return
-        }
-        const validationResult = isPatternValid(search, options);
-        if (!validationResult.valid) {
-            alert(validationResult.error)
-            return
-        }
+            if (!checkConditions(search)) {
+                alert('Add atleast host and application')
+                return
+            }
+            const repeated = checkCategoriesForRepetition(search)
+            if (!repeated.valid) {
+                alert(repeated.error)
+                return
+            }
+            const validationResult = isPatternValid(search, options);
+            if (!validationResult.valid) {
+                alert(validationResult.error)
+                return
+            }
         }
 
         // // ✅ Passed all validations
